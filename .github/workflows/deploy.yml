@@ -1,0 +1,39 @@
+name: Deploy WebApp
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Zig
+        uses: mlugg/setup-zig@v1
+        with:
+          version: 0.16.0
+
+      - name: Build project
+        run: zig build -Doptimize=ReleaseSmall
+
+      - name: Prepare deploy folder
+        run: |
+          cp zig-out/bin/app.wasm webapp/
+          cp zig-out/bin/app.base64 webapp/ || true
+
+      - name: Deploy to deploy branch
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: deploy
+          publish_dir: ./webapp
+          force_orphan: true
