@@ -1,0 +1,10 @@
+{
+    "name": "Mosaic",
+    "short_name": "Mosaic",
+    "description": "Mosaic game with zig + bare wasm",
+
+    "orientation": "landscape",
+
+    "start_url": "./index.html",
+    "display": "fullscreen"
+}
